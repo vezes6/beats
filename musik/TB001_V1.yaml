@@ -1,0 +1,30 @@
+Song:
+  Tempo: 160
+  Flow:
+    - Verse:  x2
+    - Chorus: x1
+  Kit:
+    - bass:     kick.wav
+    - snare:    snare.wav
+    - hihat:    hat.wav
+    - ride:     ride_ff2.wav
+
+Verse:
+  - hihat:    X...X...X...X...
+  - snare:    ....X.......X...
+  - bass:     X.......X.......
+  - ride:     ................
+#             1 + 2 + 3 + 4 + 
+Chorus:
+  - hihat:    X...X...X...X...
+  - snare:    ....X.......X...
+  - bass:     X.......X.......
+  - ride:     ............X...
+#             1 + 2 + 3 + 4 + 
+
+
+# oooooooo
+#         ºººººººº
+#                 ++++++++
+#                         xxxxxxxx
+#                                 =======

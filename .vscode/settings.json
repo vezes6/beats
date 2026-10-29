@@ -1,0 +1,16 @@
+{
+  "rubyLsp.rubyVersionManager": {
+    "identifier": "custom"
+  },
+  "rubyLsp.customRubyCommand": "set \"PATH=C:\\Ruby40-x64\\bin;%PATH%\"",
+  "rubyLsp.rubyExecutablePath": "C:/Ruby40-x64/bin/ruby.exe",
+  "terminal.integrated.env.windows": {
+    "PATH": "C:\\Ruby40-x64\\bin;${env:PATH}"
+  },
+  "[ruby]": {
+    "editor.defaultFormatter": "Shopify.ruby-lsp",
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.semanticHighlighting.enabled": true
+  }
+}
