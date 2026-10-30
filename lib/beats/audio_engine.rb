@@ -21,7 +21,7 @@ module Beats
       @composited_pattern_cache = {}
     end
 
-    def write_to_file(output_file_name)
+    def write_to_file(output_file_name, options={})
       packed_pattern_cache = {}
       num_tracks_in_song = @song.total_tracks
 
@@ -44,10 +44,13 @@ module Beats
         incoming_overflow = packed_pattern_cache[key][:overflow]
       end
 
-      # Write any remaining overflow from the final pattern
-      final_overflow_composite = AudioUtils.composite(incoming_overflow.values, format.channels)
-      final_overflow_composite = AudioUtils.scale(final_overflow_composite, format.channels, num_tracks_in_song)
-      writer.write(WaveFile::Buffer.new(final_overflow_composite, format))
+      # Overflow still connects adjacent patterns, but should only extend the song
+      # beyond its Flow when explicitly requested (e.g. for cymbal decay).
+      if options[:preserve_tails]
+        final_overflow_composite = AudioUtils.composite(incoming_overflow.values, format.channels)
+        final_overflow_composite = AudioUtils.scale(final_overflow_composite, format.channels, num_tracks_in_song)
+        writer.write(WaveFile::Buffer.new(final_overflow_composite, format))
+      end
 
       writer.close
 

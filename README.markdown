@@ -1,6 +1,86 @@
 Beats Drum Machine
 ------------------
 
+## Sequenciador no terminal (Windows)
+
+Na pasta do projeto, instale as dependências com `bundle install` e inicie:
+
+```powershell
+bundle exec .\beats
+bundle exec .\beats projeto_1.brf
+```
+
+Sem argumento, abre o projeto padrão definido em [beats.yml](beats.yml).
+O nome é o próximo `projeto_N.brf` disponível. Com argumento, procura primeiro
+o arquivo relativo ao diretório atual e depois na pasta `ProjectsPath`.
+Também aceita um caminho absoluto. Para outra configuração:
+
+```powershell
+bundle exec .\beats --config C:\temp\beats.yml
+```
+
+Esta primeira versão edita um único padrão `Verse`, com 16 passos por pista
+e `Flow` fixo em `Verse: x1`. O campo selecionado aparece em destaque.
+
+| Tecla | Ação |
+|---|---|
+| Esquerda / direita | Mover entre passos; ao passar da borda, ir à próxima pista ou ao rodapé |
+| Cima / baixo na grade | Selecionar outra pista; abaixo da última, selecionar Tempo |
+| Tab num passo | Alternar entre som (`X`) e pausa (`=`) |
+| Cima / baixo em Tempo | Aumentar / diminuir 1 BPM (1 a 999) |
+| Esquerda em Tempo | Voltar ao último passo da grade |
+| Direita em Tempo | Selecionar Sair, depois Gerar |
+| Tab em Sair | Salvar o `.brf` e encerrar |
+| Tab em Gerar | Gerar/sobrescrever o WAV com as alterações atuais e continuar editando |
+| Ctrl+C | Salvar e encerrar, como Sair |
+
+Use um terminal com suporte ANSI (como o terminal integrado do VSCode ou
+Windows Terminal), com pelo menos 60 colunas e 12 linhas. Listas maiores de
+pistas acompanham a seleção com rolagem. A geração é offline; não há reprodução
+em tempo real nesta versão. Erros aparecem na tela. Se não conseguir salvar,
+a aplicação permanece aberta com as alterações.
+
+### Configuração e arquivos
+
+Edite `beats.yml` para alterar:
+
+- `Indicators.Active` / `Indicators.Rest`: caracteres usados na tela.
+- `SamplesPath`: pasta dos samples WAV.
+- `ProjectsPath`: pasta de novos projetos e busca de projetos pelo nome.
+- `AudioPath`: pasta dos WAV gerados.
+- `AudioFile`: opcional; nome fixo ou caminho completo do WAV. Com `null`,
+  usa o nome do projeto, como `projeto_1.wav`.
+- `PreserveTails`: `false` por padrão; termina o WAV no fim do `Flow`.
+  Use `true` para deixar os últimos samples terminarem depois desse ponto.
+- `Kit`: nomes dos instrumentos e arquivos de samples.
+- `Default`: tempo e sequência inicial das pistas. Use `X` e `.` aqui.
+
+Os caminhos relativos da configuração partem da pasta de `beats.yml`.
+Para caminhos Windows absolutos, use aspas simples: `'C:\temp\samples'`.
+O padrão usa cinco sons de `musik/samples`: bass, snare, hihat, openhat e ride.
+Novos projetos são salvos em `musik/projects` e o áudio em `musik/output`.
+
+Os arquivos `.brf` são YAML com `Song`, `Kit` e `Verse`, preservando o Kit e
+o caminho dos samples de cada projeto. O caminho dos samples é relativo ao
+arquivo `.brf` quando possível. Os passos são salvos como `X`/`.` para manter
+compatibilidade com o motor de áudio; trocar os indicadores não altera o som.
+O asterisco no título indica alterações ainda não salvas. Gerar não salva
+o projeto; Sair salva. Arquivos existentes são substituídos somente depois
+que a escrita termina com sucesso.
+
+O comando original permanece disponível para gerar músicas YAML sem o editor:
+
+```powershell
+bundle exec ruby -Ilib bin/beats musik/example_song.yaml musik/output/example.wav
+```
+
+O áudio termina no fim da sequência do `Flow`, mesmo que um sample contenha
+uma cauda longa ou silêncio no final. Sons podem continuar entre padrões;
+o corte acontece somente no final da música. Por exemplo, a 120 BPM, dois
+`Verse` e dois `Chorus` de 16 passos resultam em aproximadamente 8 segundos.
+Para preservar as caudas na exportação por linha de comando, use
+`--preserve-tails`. No editor, use `PreserveTails: true` em `beats.yml`.
+
 Beats is a command-line drum machine written in pure Ruby. Feed it a song notated in YAML, and it will produce a precision-milled *.wav file of impeccable timing and feel. Here's an example song:
 
     Song:

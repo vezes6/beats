@@ -1,0 +1,30 @@
+# Paths are relative to this configuration file. Absolute Windows paths work too.
+# Use single quotes for Windows paths, e.g. 'C:\temp\samples'.
+Indicators:
+  Active: X
+  Rest: '='
+
+SamplesPath: musik/samples
+ProjectsPath: musik/projects
+AudioPath: musik/output
+# Optional fixed output filename. Leave null to use <project name>.wav.
+AudioFile: null
+# false: end audio at the end of Flow; true: let the last samples finish.
+PreserveTails: false
+
+Kit:
+  - bass: kick.wav
+  - snare: snare_3.wav
+  - hihat: hh_closed_1.wav
+  - openhat: hh_open_3.wav
+  - ride: ride_ff2.wav
+
+# Projects use the engine's X and . notation; Indicators only change the screen.
+Default:
+  Tempo: 160
+  Verse:
+    - bass:    X.X.....X.X.....
+    - snare:   ....X.......X...
+    - hihat:   X.X..X.XX.X.XX..
+    - openhat: ..............X.
+    - ride:    X...............

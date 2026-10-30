@@ -50,7 +50,8 @@ class IntegrationTest < Minitest::Test
     actual_output_file   = "#{OUTPUT_FOLDER}/example_combined_#{num_channels}_#{bits_per_sample}#{suffix}.wav"
     expected_output_file = "test/fixtures/expected_output/example_combined_#{num_channels}_#{bits_per_sample}.wav"
 
-    options = {:split => false}
+    # These golden files include sample tails from the original exporter.
+    options = {:split => false, :preserve_tails => true}
     unless base_path == nil
       options[:base_path] = base_path
     end
@@ -83,7 +84,8 @@ class IntegrationTest < Minitest::Test
     actual_output_prefix   = "#{OUTPUT_FOLDER}/example_split_#{num_channels}_#{bits_per_sample}#{suffix}"
     expected_output_prefix = "test/fixtures/expected_output/example_split_#{num_channels}_#{bits_per_sample}"
 
-    options = {:split => true}
+    # Preserve the original full-decay output when comparing golden files.
+    options = {:split => true, :preserve_tails => true}
     unless base_path == nil
       options[:base_path] = base_path
     end

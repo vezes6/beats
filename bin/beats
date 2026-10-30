@@ -27,6 +27,10 @@ def parse_options
       options[:base_path] = base_path
     end
 
+    opts.on("--preserve-tails", "Let samples finish beyond the end of the song") do
+      options[:preserve_tails] = true
+    end
+
     opts.on("-v", "--version", "Display version number and exit") do
       puts "Beats Drum Machine #{Beats::VERSION}"
       exit
