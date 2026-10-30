@@ -1,3 +1,5 @@
 /.ruby-lsp/
 /.bundle/
 /vendor/bundle/
+/musik/projects/
+/musik/output/*.wav
