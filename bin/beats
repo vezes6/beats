@@ -31,6 +31,10 @@ def parse_options
       options[:preserve_tails] = true
     end
 
+    opts.on("--trim-leading-silence", "Align sample attacks by removing quiet leading audio") do
+      options[:trim_leading_silence] = true
+    end
+
     opts.on("-v", "--version", "Display version number and exit") do
       puts "Beats Drum Machine #{Beats::VERSION}"
       exit

@@ -52,6 +52,9 @@ Edite `beats.yml` para alterar:
   usa o nome do projeto, como `projeto_1.wav`.
 - `PreserveTails`: `false` por padrão; termina o WAV no fim do `Flow`.
   Use `true` para deixar os últimos samples terminarem depois desse ponto.
+- `TrimLeadingSilence`: `true` por padrão no editor; remove o trecho inicial
+  abaixo de 1% do pico de cada sample para alinhar o ataque ao passo `X`.
+  Não altera os WAV originais. Use `false` para preservar o início gravado.
 - `Kit`: nomes dos instrumentos e arquivos de samples.
 - `Default`: tempo e sequência inicial das pistas. Use `X` e `.` aqui.
 
@@ -80,6 +83,9 @@ o corte acontece somente no final da música. Por exemplo, a 120 BPM, dois
 `Verse` e dois `Chorus` de 16 passos resultam em aproximadamente 8 segundos.
 Para preservar as caudas na exportação por linha de comando, use
 `--preserve-tails`. No editor, use `PreserveTails: true` em `beats.yml`.
+Na linha de comando, `--trim-leading-silence` ativa o alinhamento dos ataques
+também para músicas YAML. Sem essa opção, a linha de comando mantém o início
+original dos samples.
 
 Beats is a command-line drum machine written in pure Ruby. Feed it a song notated in YAML, and it will produce a precision-milled *.wav file of impeccable timing and feel. Here's an example song:
 

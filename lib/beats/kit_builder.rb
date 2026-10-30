@@ -11,8 +11,9 @@ module Beats
     SAMPLE_FORMAT = "pcm_#{BITS_PER_SAMPLE}".to_sym
     SAMPLE_RATE = 44100
 
-    def initialize(base_path)
+    def initialize(base_path, options={})
       @base_path = base_path
+      @trim_leading_silence = options[:trim_leading_silence]
       @labels_to_filenames = {}
       @composite_replacements = {}
     end
@@ -59,9 +60,16 @@ module Beats
       canonical_format = WaveFile::Format.new(num_channels, SAMPLE_FORMAT, SAMPLE_RATE)
       filenames_to_buffers.values.each {|buffer| buffer.convert!(canonical_format) }
 
+      filenames_to_samples = {}
+      filenames_to_buffers.each do |filename, buffer|
+        samples = buffer.samples
+        samples = trim_leading_silence(samples) if @trim_leading_silence
+        filenames_to_samples[filename] = samples
+      end
+
       labels_to_buffers = {}
       @labels_to_filenames.each do |label, filename|
-        labels_to_buffers[label] = filenames_to_buffers[filename].samples
+        labels_to_buffers[label] = filenames_to_samples[filename]
       end
       labels_to_buffers[Kit::PLACEHOLDER_TRACK_NAME] = []
 
@@ -71,6 +79,24 @@ module Beats
     attr_reader :composite_replacements
 
     private
+
+    # Drum samples can contain a quiet pre-roll before their actual attack.
+    # Align the first frame above 1% of the sample's peak (-40 dB relative).
+    # Work on decoded frames only: never rewrite source files or split channels.
+    def trim_leading_silence(samples)
+      peak = samples.inject(0) do |maximum, frame|
+        level = frame.is_a?(Array) ? frame.map(&:abs).max : frame.abs
+        [maximum, level].max
+      end
+      return samples if peak == 0
+
+      threshold = peak * 0.01
+      first = samples.index do |frame|
+        level = frame.is_a?(Array) ? frame.map(&:abs).max : frame.abs
+        level >= threshold
+      end
+      samples[first..-1]
+    end
 
     # Converts relative path into absolute path. Note that this will also handle
     # expanding ~ on platforms that support that.

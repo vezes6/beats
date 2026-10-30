@@ -9,7 +9,7 @@ module Beats
     class ParseError < StandardError; end
 
     # Parses a raw YAML song definition and converts it into a Song and Kit object.
-    def self.parse(base_path, raw_yaml_string)
+    def self.parse(base_path, raw_yaml_string, options={})
       raw_song_components = hashify_raw_yaml(raw_yaml_string)
 
       unless raw_song_components[:folder].nil?
@@ -17,7 +17,7 @@ module Beats
       end
 
       song = Song.new
-      kit_builder = KitBuilder.new(base_path)
+      kit_builder = KitBuilder.new(base_path, options)
 
       # Set tempo
       begin

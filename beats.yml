@@ -11,6 +11,8 @@ AudioPath: musik/output
 AudioFile: null
 # false: end audio at the end of Flow; true: let the last samples finish.
 PreserveTails: false
+# Align audible sample attacks to each X without editing the original WAVs.
+TrimLeadingSilence: true
 
 Kit:
   - bass: kick.wav

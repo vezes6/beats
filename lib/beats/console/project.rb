@@ -7,7 +7,7 @@ module Beats
   module Console
     class Configuration
       attr_reader :active, :rest, :samples_path, :projects_path, :audio_path,
-                  :audio_file, :kit, :defaults, :preserve_tails
+                  :audio_file, :kit, :defaults, :preserve_tails, :trim_leading_silence
 
       def initialize(path)
         path = File.expand_path(path)
@@ -26,6 +26,10 @@ module Beats
         @preserve_tails = data.fetch("PreserveTails", false)
         unless @preserve_tails == true || @preserve_tails == false
           raise ArgumentError, "PreserveTails deve ser true ou false."
+        end
+        @trim_leading_silence = data.fetch("TrimLeadingSilence", true)
+        unless @trim_leading_silence == true || @trim_leading_silence == false
+          raise ArgumentError, "TrimLeadingSilence deve ser true ou false."
         end
         if @audio_file
           @audio_file = resolve_path(@audio_file, @audio_path)
@@ -101,7 +105,13 @@ module Beats
       end
 
       def save
-        atomic_write(path) { |temporary| File.write(temporary, YAML.dump(document)) }
+        # These validated 16-step strings are safe YAML plain scalars. Writing
+        # Verse explicitly keeps dot-leading rhythms readable without quotes.
+        text = YAML.dump({"Song" => document.fetch("Song")}) + "Verse:\n"
+        names.each_with_index do |name, index|
+          text += "- #{name}: #{tracks[index].join}\n"
+        end
+        atomic_write(path) { |temporary| File.write(temporary, text) }
         @dirty = false
         path
       end
@@ -179,7 +189,8 @@ module Beats
 
       def parsed_song
         # The original parser understands X/.; screen indicators never enter the audio engine.
-        SongParser.parse(samples_path, YAML.dump(document))
+        SongParser.parse(samples_path, YAML.dump(document),
+                         :trim_leading_silence => config.trim_leading_silence)
       end
 
       def atomic_write(destination)

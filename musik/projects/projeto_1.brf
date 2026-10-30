@@ -1,0 +1,18 @@
+---
+Song:
+  Tempo: 124
+  Flow:
+  - Verse: x1
+  SamplesPath: "../samples"
+  Kit:
+  - bass: kick.wav
+  - snare: snare_3.wav
+  - hihat: hh_closed_1.wav
+  - openhat: hh_open_3.wav
+  - ride: ride_ff2.wav
+Verse:
+- bass: X.......X.......
+- snare: ....X.......X...
+- hihat: ................
+- openhat: ................
+- ride: ................
